@@ -16,13 +16,7 @@ namespace ServerSide.DAL.Repositories
             _dbSet = context.Set<TEntity>();
         }
 
-        public void Create(TEntity item)
-        {
-            _dbSet.Add(item);
-            _context.SaveChanges();
-        }
-
-        public TEntity FindById(int id)
+        public TEntity GetById(int id)
         {
             return _dbSet.Find(id);
         }
@@ -37,14 +31,19 @@ namespace ServerSide.DAL.Repositories
             return _dbSet.AsNoTracking().AsEnumerable().Where(predicate).ToList();
         }
 
-        public void Remove(TEntity item)
+        public void Create(TEntity item)
         {
-            _dbSet.Remove(item);
+            _dbSet.Add(item);
         }
 
         public void Update(TEntity item)
         {
             _context.Entry(item).State = EntityState.Modified;
+        }
+
+        public void Remove(TEntity item)
+        {
+            _dbSet.Remove(item);
         }
     }
 }

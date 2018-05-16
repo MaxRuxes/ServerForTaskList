@@ -6,15 +6,15 @@ namespace ServerSide.DAL.UnitOfWork
 {
     public class UnitOfWork : IUnitOfWork
     {
+        private readonly TaskListContext _context = new TaskListContext();
+
         private IGenericRepository<Attachment> _attachmentRepository;
         private IGenericRepository<Todo> _todoRepository;
-        private readonly TaskListContext _context = new TaskListContext();
+
         private bool _disposed;
 
-        public IGenericRepository<Attachment> AttachmentRepository => _attachmentRepository
-                                                                      ?? (_attachmentRepository =
-                                                                          new EfGenericRepository<Attachment>(_context)
-                                                                      );
+        public IGenericRepository<Attachment> AttachmentRepository =>
+            _attachmentRepository ?? (_attachmentRepository = new EfGenericRepository<Attachment>(_context));
 
         public IGenericRepository<Todo> TodoRepository =>
             _todoRepository ?? (_todoRepository = new EfGenericRepository<Todo>(_context));
@@ -24,6 +24,7 @@ namespace ServerSide.DAL.UnitOfWork
             _context.SaveChanges();
         }
 
+        #region Implementing IDisposable
 
         protected virtual void Dispose(bool disposing)
         {
@@ -42,5 +43,7 @@ namespace ServerSide.DAL.UnitOfWork
             Dispose(true);
             GC.SuppressFinalize(this);
         }
+
+        #endregion
     }
 }
