@@ -8,7 +8,7 @@ namespace ServerSide.BLL.Services.Interfaces
         TodoDto GetTodoById(int todoId);
         IEnumerable<TodoDto> GetAllTodos();
         int CreateTodo(TodoDto todoItem);
-        bool UpdateTodo(int todoId, TodoDto todoOldItem);
+        bool UpdateTodo(int todoOldId, TodoDto todoNewItem);
         bool DeleteTodo(int todoId);
     }
 }

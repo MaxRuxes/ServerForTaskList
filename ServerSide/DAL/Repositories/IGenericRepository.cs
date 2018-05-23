@@ -7,7 +7,7 @@ namespace ServerSide.DAL.Repositories
     {
         void Create(TEntity item);
         TEntity GetById(int id);
-        IEnumerable<TEntity> Get();
+        IEnumerable<TEntity> GetAll();
         IEnumerable<TEntity> Get(Func<TEntity, bool> predicate);
         void Remove(TEntity item);
         void Update(TEntity item);

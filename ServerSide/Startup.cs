@@ -1,9 +1,12 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ServerSide.DAL;
+using ServerSide.Environment;
 
 namespace ServerSide
 {
@@ -19,9 +22,16 @@ namespace ServerSide
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors();
+
             // add mysql
-            var connectionString = "server=localhost;database=todo;user=root;password=1234;SslMode=none";
+            const string connectionString = "server=localhost;database=todo;user=root;password=1234;SslMode=none;ConnectionReset=true";
             services.AddDbContext<TaskListContext>(options => options.UseMySQL(connectionString));
+
+
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+            Mapper.Initialize(cfg => cfg.AddProfile(new AutomapperMappingProfile()));
 
             // Add framefork services
             services.AddMvc();
@@ -35,6 +45,7 @@ namespace ServerSide
                 var context = serviceScope.ServiceProvider.GetRequiredService<TaskListContext>();
                 context.Database.EnsureCreated();
             }
+
 
             app.UseMvc();
             app.UseDefaultFiles();

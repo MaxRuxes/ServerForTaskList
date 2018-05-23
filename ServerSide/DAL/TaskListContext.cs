@@ -3,6 +3,7 @@ using ServerSide.DAL.Models;
 
 namespace ServerSide.DAL
 {
+
     public class TaskListContext : DbContext
     {
         public DbSet<Todo> Todo { get; set; }
@@ -13,9 +14,22 @@ namespace ServerSide.DAL
 
         }
 
-        public TaskListContext(DbContextOptions<TaskListContext> options) : base(options)
+        public TaskListContext(DbContextOptions options) : base(options)
         {
 
+        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+                optionsBuilder.UseMySQL("server=localhost;database=todo;user=root;password=1234;SslMode=none;ConnectionReset=true");
+            }
+
+            Database.AutoTransactionsEnabled = false;
+            //optionsBuilder.EnableSensitiveDataLogging();
+
+            base.OnConfiguring(optionsBuilder);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

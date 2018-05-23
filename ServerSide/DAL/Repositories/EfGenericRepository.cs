@@ -21,7 +21,7 @@ namespace ServerSide.DAL.Repositories
             return _dbSet.Find(id);
         }
 
-        public IEnumerable<TEntity> Get()
+        public IEnumerable<TEntity> GetAll()
         {
             return _dbSet.AsNoTracking().ToList();
         }

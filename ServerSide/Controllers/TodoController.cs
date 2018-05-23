@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
 using ServerSide.BLL.DTO;
+using ServerSide.BLL.Services;
+using ServerSide.BLL.Services.Interfaces;
 using ServerSide.DAL;
-using ServerSide.DAL.Models;
 
 namespace ServerSide.Controllers
 {
@@ -15,45 +10,56 @@ namespace ServerSide.Controllers
     [Route("api/Todo")]
     public class TodoController : Controller
     {
-        private readonly TaskListContext _dbContext;
+        private readonly ITodoService _todoService;
 
         public TodoController(TaskListContext context)
         {
-            _dbContext = context;
+            _todoService = new TodoService();
         }
 
         // GET: api/Todo
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public IActionResult Get()
         {
-            return Ok(await _dbContext.Todo.ToListAsync());
+            return Ok(_todoService.GetAllTodos());
         }
 
-        //// GET: api/Todo/5
-        //[HttpGet("{id}", Name = "Get")]
-        //public async Task<IAsyncResult> Get(int id)
-        //{ 
-           
-        //    return;
-        //}
-        
+        // GET: api/Todo/5
+        [HttpGet("{id}", Name = "GetAll")]
+        public IActionResult GetAll(int id)
+        {
+            return Ok(_todoService.GetTodoById(id));
+        }
+
         // POST: api/Todo
         [HttpPost]
-        public void Post([FromBody]TodoDto value)
+        public int Post([FromBody] TodoDto value)
         {
-
+            return _todoService.CreateTodo(value);
         }
-        
+
         // PUT: api/Todo/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
+        public bool Put(int id, [FromBody] TodoDto value)
         {
+            if (id > 0)
+            {
+                return _todoService.UpdateTodo(id, value);
+            }
+
+            return false;
         }
-        
+
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public bool Delete(int id)
         {
+            if (id > 0)
+            {
+                return _todoService.DeleteTodo(id);
+            }
+
+            return false;
         }
     }
 }
